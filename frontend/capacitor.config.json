@@ -1,0 +1,9 @@
+{
+  "appId": "com.ecommerce.app",
+  "appName": "E_commerce",
+  "webDir": "dist",
+  "server": {
+    "url": "http://10.168.157.208:8000",
+    "cleartext": true
+  }
+}

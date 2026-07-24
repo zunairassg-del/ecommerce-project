@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup - Zunaira Tech Solutions</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f4f4f4; }
+        .register-card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <h2>Create Account</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Sign Up</button>
+            <!-- TEST: I AM THE CORRECT FILE -->
+<h1>TEST: I AM THE CORRECT FILE</h1>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    </div>
+</body>
+</html>
