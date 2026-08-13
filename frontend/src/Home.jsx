@@ -1,142 +1,172 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import api from './Api'; // Api.js import kar liya jo AWS URL handle karega
+import React, { useEffect, useState } from 'react';
 
-function Home() {
+const Home = () => {
   const [products, setProducts] = useState([]);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ username: 'Guest' });
 
+  // AWS Backend API se Products Fetch karne ke liye
   useEffect(() => {
-    // Django backend se products fetch karna
-    api.get('/api/products/')
-      .then(response => {
-        setProducts(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching products:", error);
-      });
-
-    // User authentication ki API call
-    api.get('/api/user/')
-      .then(response => {
-        setUser(response.data);
-      })
-      .catch(error => {
-        console.log("User not logged in or guest mode");
-      });
+    // Apne AWS EC2 / Backend ka URL yahan dein (e.g. http://13.xx.xx.xx/api/products/)
+    fetch('http://16.16.110.33/api/products/')
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((err) => console.error("Error fetching products:", err));
   }, []);
-
-  const handleAddToCart = (productId) => {
-    alert(`Product ${productId} added to cart!`);
-  };
 
   return (
     <div>
+      {/* Dynamic CSS Styling */}
+      <style>{`
+        .product-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 25px;
+          padding: 40px;
+          max-width: 1200px;
+          margin: auto;
+        }
+
+        .product-card {
+          background: #ffffff;
+          border: 1px solid #eee;
+          border-radius: 12px;
+          padding: 15px;
+          transition: all 0.3s ease;
+          text-align: center;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .product-card:hover {
+          box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+          transform: translateY(-5px);
+        }
+
+        .product-card img {
+          width: 100%;
+          height: 300px;
+          object-fit: cover;
+          display: block;
+          border-radius: 10px;
+          margin: 0 auto 15px auto;
+        }
+
+        .product-card h3 {
+          font-size: 18px;
+          margin: 10px 0;
+          color: #333;
+        }
+
+        .product-card p {
+          font-size: 16px;
+          font-weight: bold;
+          color: #e67e22;
+          margin-bottom: 15px;
+        }
+
+        .add-to-cart-btn {
+          border: 2px solid #333;
+          color: #333;
+          padding: 10px 20px;
+          border-radius: 5px;
+          text-decoration: none;
+          font-weight: bold;
+          display: inline-block;
+          transition: 0.3s;
+          cursor: pointer;
+        }
+
+        .add-to-cart-btn:hover {
+          background-color: #333;
+          color: white;
+        }
+
+        .nav-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 20px;
+          background: #f8f9fa;
+          border-bottom: 2px solid #ddd;
+          gap: 10px;
+        }
+
+        .nav-links {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .btn-upgrade {
+          background: linear-gradient(45deg, #8e2de2, #4a00e0);
+          color: white !important;
+          padding: 8px 20px;
+          border-radius: 50px;
+          font-weight: 600;
+          text-decoration: none;
+        }
+
+        .btn-cart {
+          background-color: #0ea5e9;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          text-decoration: none;
+        }
+
+        .btn-logout {
+          background-color: #ef4444;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          border: none;
+          cursor: pointer;
+        }
+      `}</style>
+
       {/* Navbar */}
-      <nav style={{
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        justifyContent: 'space-between',
-        alignItems: 'center', 
-        padding: '15px 20px', 
-        background: '#f8f9fa',
-        borderBottom: '2px solid #ddd', 
-        gap: '10px'
-      }}>
-        <div>Welcome, <strong>{user ? user.username : "Guest"}</strong></div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <Link to="/pricing" style={{ 
-            padding: '8px 16px', 
-            border: 'none', 
-            borderRadius: '6px', 
-            cursor: 'pointer', 
-            fontWeight: '600', 
-            textDecoration: 'none', 
-            backgroundColor: '#6366f1', 
-            color: 'white' 
-          }}>
-            Upgrade
-          </Link>
-          <Link to="/cart" style={{ 
-            padding: '8px 16px', 
-            border: 'none', 
-            borderRadius: '6px', 
-            cursor: 'pointer', 
-            fontWeight: '600', 
-            textDecoration: 'none', 
-            backgroundColor: '#0ea5e9', 
-            color: 'white' 
-          }}>
-            Cart
-          </Link>
-          <button onClick={() => alert('Logout clicked')} style={{ 
-            padding: '8px 16px', 
-            border: 'none', 
-            borderRadius: '6px', 
-            cursor: 'pointer', 
-            fontWeight: '600', 
-            backgroundColor: '#ef4444', 
-            color: 'white' 
-          }}>
-            Logout
-          </button>
+      <nav className="nav-container">
+        <div>Welcome, <strong>{user.username}</strong></div>
+        
+        <div className="nav-links">
+          <a className="btn-upgrade" href="/pricing.html">Upgrade Plan</a>
+          <a className="btn-cart" href="/view_cart.html">View Cart</a>
+          <button className="btn-logout" onClick={() => alert("Logged out")}>Logout</button>
         </div>
       </nav>
 
-      <h2 style={{ textAlign: 'center', marginTop: '40px', color: '#0f172a' }}>Our Exclusive Collection</h2>
+      <h2 style={{ textAlign: 'center', marginTop: '40px', color: '#0f172a' }}>
+        Our Exclusive Collection
+      </h2>
 
-      {/* Product Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-        gap: '20px', 
-        padding: '20px', 
-        maxWidth: '1200px', 
-        margin: 'auto'
-      }}>
-        {products && products.length > 0 ? (
+      {/* Products Display Grid */}
+      <div className="product-grid">
+        {products.length > 0 ? (
           products.map((product) => (
-            <div key={product.id} style={{
-              background: '#fff', 
-              border: '1px solid #eee', 
-              borderRadius: '12px',
-              padding: '15px', 
-              textAlign: 'center', 
-              boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
-            }}>
+            <div className="product-card" key={product.id}>
               {product.image && (
-                <img 
-                  src={`http://16.16.110.33${product.image}`} 
-                  alt={product.name} 
-                  style={{ width: '100%', height: '250px', objectFit: 'cover', borderRadius: '10px', marginBottom: '10px' }} 
-                />
+                <img src={product.image} alt={product.name} />
               )}
-              <h3 style={{ fontSize: '18px', margin: '10px 0' }}>{product.name}</h3>
-              <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#e67e22', marginBottom: '15px' }}>
-                Price: {product.price} PKR
-              </p>
+              <h3>{product.name}</h3>
+              <p>Price: {product.price} PKR</p>
               
-              <button onClick={() => handleAddToCart(product.id)} style={{
-                display: 'block', 
-                width: '100%', 
-                border: '2px solid #333', 
-                background: 'transparent', 
-                color: '#333',
-                padding: '10px', 
-                borderRadius: '5px', 
-                fontWeight: 'bold', 
-                cursor: 'pointer'
-              }}>
+              <button 
+                className="add-to-cart-btn" 
+                onClick={() => alert(`Added ${product.name} to cart`)}
+              >
                 🛒 Add to Cart
               </button>
             </div>
           ))
         ) : (
-          <p style={{ textAlign: 'center', gridColumn: '1 / -1', color: '#666' }}>first..</p>
+          <p style={{ gridColumn: '1/-1', textAlign: 'center' }}>
+            Loading products or backend not connected...
+          </p>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default Home;
