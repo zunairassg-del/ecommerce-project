@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #f8fafc; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .success-card { 
+            background: white; 
+            padding: 50px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            text-align: center; 
+            max-width: 400px; 
+        }
+        .icon { 
+            font-size: 60px; 
+            color: #008080; 
+            margin-bottom: 20px; 
+        }
+        h1 { color: #1e293b; margin-bottom: 10px; }
+        p { color: #64748b; margin-bottom: 30px; }
+        .home-btn { 
+            background: #008080; 
+            color: white; 
+            padding: 12px 30px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            transition: 0.3s;
+        }
+        .home-btn:hover { background: #006666; }
+    </style>
+</head>
+<body>
+
+<div class="success-card">
+    <div class="icon">✓</div>
+    <h1>Order Placed!</h1>
+    <p>Shukriya! Aapka order receive ho gaya hai aur jald hi aapke diye gaye address par deliver kar diya jayega.</p>
+    <a href="{% url 'product_list' %}" class="home-btn">Go Back to Store</a>
+</div>
+
+</body>
+</html>

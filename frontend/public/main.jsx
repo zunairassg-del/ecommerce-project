@@ -1,35 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import api from './Api'; // Api.js import kar liya jo AWS URL handle karega
 
-function Home() {
-  const [products, setProducts] = useState([]);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    // Django backend se products fetch karna
-    api.get('/api/products/')
-      .then(response => {
-        setProducts(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching products:", error);
-      });
-
-    // User authentication ki API call
-    api.get('/api/user/')
-      .then(response => {
-        setUser(response.data);
-      })
-      .catch(error => {
-        console.log("User not logged in or guest mode");
-      });
-  }, []);
-
-  const handleAddToCart = (productId) => {
-    alert(`Product ${productId} added to cart!`);
-  };
-
+function Home({ user, products, onAddToCart }) {
   return (
     <div>
       {/* Navbar */}
@@ -106,7 +78,7 @@ function Home() {
             }}>
               {product.image && (
                 <img 
-                  src={`http://16.16.110.33${product.image}`} 
+                  src={product.image} 
                   alt={product.name} 
                   style={{ width: '100%', height: '250px', objectFit: 'cover', borderRadius: '10px', marginBottom: '10px' }} 
                 />
@@ -116,7 +88,7 @@ function Home() {
                 Price: {product.price} PKR
               </p>
               
-              <button onClick={() => handleAddToCart(product.id)} style={{
+              <button onClick={() => onAddToCart && onAddToCart(product.id)} style={{
                 display: 'block', 
                 width: '100%', 
                 border: '2px solid #333', 
@@ -132,7 +104,7 @@ function Home() {
             </div>
           ))
         ) : (
-          <p style={{ textAlign: 'center', gridColumn: '1 / -1', color: '#666' }}>first..</p>
+          <p style={{ textAlign: 'center', gridColumn: '1 / -1', color: '#666' }}>No products available yet.</p>
         )}
       </div>
     </div>

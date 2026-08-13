@@ -25,5 +25,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('api/products/', views.get_products, name='get_products'),
     path("products/", ProductList.as_view())
+    path('api/user/', views.get_current_user, name='get_current_user'),
 
 ]

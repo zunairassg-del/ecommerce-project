@@ -1,0 +1,54 @@
+
+/* Custom Professional Look */
+.card {
+    border-radius: 15px;
+    border: none;
+}
+
+.table thead {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.badge {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}<div class="container mt-5">
+    <h2 class="mb-4">My Orders</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Total Amount</th>
+                        <th>Payment Status</th>
+                        <th>Order Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>Rs. {{ order.total_price }}</td>
+                        <td>
+                            {% if order.is_paid %}
+                                <span class="badge bg-success">Paid ✅</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending ⏳</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ order.created_at|date:"d M, Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">Koi order nahi mila.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

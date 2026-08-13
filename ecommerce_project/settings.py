@@ -20,6 +20,8 @@ ALLOWED_HOSTS =   ["*"]
 
 # Application definition
 
+# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,13 +39,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 ROOT_URLCONF = 'ecommerce_project.urls'
 
 TEMPLATES = [
@@ -121,3 +121,32 @@ PAYPAL_CLIENT_ID = '...'
 PAYPAL_SECRET = '...'
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', 'default_key')
 STRIPE_WEBHOOK_SECRET = 'whsec_ceaf259fc04ba53f38f4838d4a0334d071f2a9fce7d1702aa1fac78c317cc77e'
+CORS_ALLOWED_ORIGINS = [
+    "https://neon-cendol-3f71fd.netlify.app",
+    "https://bright-sherbet-8c78ba.netlify.app", # Aapka Netlify domain
+]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_PREFLIGHT_MAX_AGE = 86400
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]

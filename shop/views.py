@@ -11,7 +11,20 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
 from .serializers import ProductSerializer
+from django.http import JsonResponse
 
+def get_current_user(request):
+    if request.user.is_authenticated:
+        return JsonResponse({
+            "is_authenticated": True,
+            "username": request.user.username,
+            "email": request.user.email
+        })
+    else:
+        return JsonResponse({
+            "is_authenticated": False,
+            "message": "User not logged in or guest mode"
+        }, status=200)
 
 class ProductList(ListAPIView):
     queryset = Product.objects.all()

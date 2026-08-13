@@ -1,0 +1,112 @@
+<style>
+    :root { --primary: #008080; --bg: #f8fafc; }
+    
+    .checkout-container { 
+        max-width: 900px; 
+        margin: 40px auto; 
+        display: grid; 
+        /* Desktop ke liye side-by-side layout */
+        grid-template-columns: 1.5fr 1fr; 
+        gap: 30px; 
+        font-family: 'Segoe UI', sans-serif;
+        padding: 0 20px;
+    }
+
+    /* Mobile aur Tablets ke liye responsive adjustment */
+    @media (max-width: 768px) {
+        .checkout-container { 
+            grid-template-columns: 1fr; /* Single column layout */
+            margin: 20px auto;
+            gap: 20px;
+        }
+    }
+
+    .section { 
+        background: white; 
+        padding: 30px; 
+        border-radius: 16px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+    }
+
+    h2 { color: #1e293b; margin-top: 0; margin-bottom: 20px; font-size: 1.5rem; }
+
+    .input-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 0.9rem; }  
+    
+    input, select { 
+        width: 100%; 
+        padding: 14px; 
+        border: 2px solid #e2e8f0; 
+        border-radius: 10px; 
+        transition: all 0.3s;
+        box-sizing: border-box; 
+    }
+
+    input:focus, select:focus { 
+        border-color: var(--primary); 
+        outline: none; 
+        box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1); 
+    }
+
+    .pay-btn { 
+        width: 100%; 
+        background: var(--primary); 
+        color: white; 
+        padding: 16px; 
+        border: none; 
+        border-radius: 10px; 
+        font-weight: 700; 
+        cursor: pointer; 
+        transition: transform 0.2s, background 0.3s;
+    }
+
+    .pay-btn:hover { background: #006666; transform: translateY(-2px); }
+</style>
+
+<div class="checkout-container">
+    <div class="section">
+        <h2>Shipping Details</h2>
+        <form method="POST" action="{% url 'process_payment' %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="John Doe" required>
+            </div>
+            <div class="input-group">
+                <label>Shipping Address</label>
+                <input type="text" name="address" placeholder="Street, City, Country" required>
+            </div>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="text" name="phone" placeholder="+1 234 567 890" required>
+            </div>
+
+            <div class="input-group">
+                <label>Payment Method</label>
+                <select name="payment_method">
+                    <option value="cod">Cash on Delivery</option>
+                    <option value="paypal">Pay with PayPal</option>
+                    <option value="stripe">Pay with Stripe</option>
+                </select>
+            </div>
+
+            <button type="submit" class="pay-btn">Complete Purchase</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>Order Summary</h2>
+        <div style="color: #64748b;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>Subtotal</span> <span>Rs. {{ total }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>Delivery Charges</span> <span>Rs. 500</span>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; color: #1e293b; font-size: 1.2rem;">
+                <span>Total</span> <span>Rs. {% widthratio total|add:500 1 1 %}</span>
+            </div>
+        </div>
+    </div>
+</div>
