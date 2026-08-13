@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-    baseURL: 'https://ecom-zunatech.duckdns.org',
+    baseURL: '',
     withCredentials: true,
 });
 
