@@ -4,19 +4,30 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState({ username: 'Guest' });
 
-  // Local media images mapping (jo aapke project folder mein hain)
-  const localImages = {
-    Laptop: '/media/products/images_6.jpg',
-    Phone: '/media/products/images_7.jpg',
-    Watch: '/media/products/images_8.jpg'
-  };
+  // 12 Sample Default Products (Agar Backend 12 na bheje)
+  const defaultProducts = Array.from({ length: 12 }, (_, i) => ({
+    id: i + 1,
+    name: `Product ${i + 1}`,
+    price: `${(i + 1) * 500 + 1000}`,
+    image: `/media/products/images_${i + 6}.jpg`
+  }));
 
   // AWS Backend API se Products Fetch karne ke liye
   useEffect(() => {
     fetch('/api/products/')
       .then((res) => res.json())
-      .then((data) => setProducts(data.products || []))
-      .catch((err) => console.error("Error fetching products:", err));
+      .then((data) => {
+        // Agar backend se products ayein aur array length > 3 ho toh woh dikhao, warna default 12 dekhao
+        if (data.products && data.products.length > 3) {
+          setProducts(data.products);
+        } else {
+          setProducts(defaultProducts);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching products, showing local media:", err);
+        setProducts(defaultProducts);
+      });
   }, []);
 
   return (
@@ -49,7 +60,7 @@ const Home = () => {
 
         .product-card img {
           width: 100%;
-          height: 200px;
+          height: 250px;
           object-fit: cover;
           display: block;
           border-radius: 10px;
@@ -149,36 +160,28 @@ const Home = () => {
 
       {/* Products Display Grid */}
       <div className="product-grid">
-        {products.length > 0 ? (
-          products.map((product, index) => {
-            const title = typeof product === 'object' ? product.name : product;
-            const price = typeof product === 'object' ? product.price : '1,500';
-            
-            // Local Media path handling
-            const imageUrl = typeof product === 'object' && product.image 
-              ? product.image 
-              : localImages[title] || `/media/products/images_${index + 6}.jpg`;
+        {products.map((product, index) => {
+          const title = typeof product === 'object' ? product.name : product;
+          const price = typeof product === 'object' ? product.price : '1,500';
+          const imageUrl = typeof product === 'object' && product.image 
+            ? product.image 
+            : `/media/products/images_${index + 6}.jpg`;
 
-            return (
-              <div className="product-card" key={product.id || index}>
-                <img src={imageUrl} alt={title} />
-                <h3>{title}</h3>
-                <p>Price: PKR {price}</p>
-                
-                <button 
-                  className="add-to-cart-btn" 
-                  onClick={() => alert(`Added ${title} to cart`)}
-                >
-                  🛒 Add to Cart
-                </button>
-              </div>
-            );
-          })
-        ) : (
-          <p style={{ gridColumn: '1/-1', textAlign: 'center' }}>
-            Loading products or backend not connected...
-          </p>
-        )}
+          return (
+            <div className="product-card" key={product.id || index}>
+              <img src={imageUrl} alt={title} />
+              <h3>{title}</h3>
+              <p>Price: PKR {price}</p>
+              
+              <button 
+                className="add-to-cart-btn" 
+                onClick={() => alert(`Added ${title} to cart`)}
+              >
+                🛒 Add to Cart
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
