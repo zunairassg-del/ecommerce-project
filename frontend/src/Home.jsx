@@ -3,14 +3,23 @@ import React, { useEffect, useState } from 'react';
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState({ username: 'Guest' });
+  const [toastMessage, setToastMessage] = useState('');
 
-  // 24 Default Products (Agar Backend se kam data aaye)
+  // 24 Default Products
   const defaultProducts = Array.from({ length: 24 }, (_, i) => ({
     id: i + 1,
     name: `Product ${i + 1}`,
     price: `${(i + 1) * 250 + 1000}`,
     image: `/media/products/images_${(i % 12) + 6}.jpg`
   }));
+
+  // Toast alert trigger function
+  const handleAddToCart = (productTitle) => {
+    setToastMessage(`🛒 Added "${productTitle}" to cart!`);
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
+  };
 
   // AWS Backend API se Products Fetch karne ke liye
   useEffect(() => {
@@ -31,8 +40,32 @@ const Home = () => {
 
   return (
     <div>
+      {/* Toast Notification Box */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          backgroundColor: '#10b981',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000,
+          fontWeight: '600',
+          animation: 'fadeIn 0.3s ease-in-out'
+        }}>
+          {toastMessage}
+        </div>
+      )}
+
       {/* Dynamic CSS Styling */}
       <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         .product-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -149,7 +182,7 @@ const Home = () => {
         <div className="nav-links">
           <a className="btn-upgrade" href="/pricing.html">Upgrade Plan</a>
           <a className="btn-cart" href="/view_cart.html">View Cart</a>
-          <button className="btn-logout" onClick={() => alert("Logged out")}>Logout</button>
+          <button className="btn-logout" onClick={() => handleAddToCart("Session")}>Logout</button>
         </div>
       </nav>
 
@@ -174,7 +207,7 @@ const Home = () => {
               
               <button 
                 className="add-to-cart-btn" 
-                onClick={() => alert(`Added ${title} to cart`)}
+                onClick={() => handleAddToCart(title)}
               >
                 🛒 Add to Cart
               </button>
