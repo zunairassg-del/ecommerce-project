@@ -5,116 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Shopping Cart</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-    body {
-      background-color: #f4f6f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
-    .cart-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
-    .cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .cart-header h2 {
-      margin: 0;
-      color: #0f172a;
-    }
-    .back-btn {
-      color: #64748b;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .cart-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid #f1f5f9;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-    .item-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .item-img {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
-    .item-title {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-    .item-qty {
-      font-size: 12px;
-      color: #64748b;
-    }
-    .item-price {
-      font-weight: bold;
-      color: #0f172a;
-    }
-    .remove-btn {
-      color: #ef4444;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-      margin-top: 4px;
-      display: block;
-    }
-    .total-section {
-      display: flex;
-      justify-content: space-between;
-      font-size: 18px;
-      font-weight: bold;
-      margin: 20px 0;
-      color: #0f172a;
-    }
-    .checkout-btn {
-      width: 100%;
-      background: #0f172a;
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .checkout-btn:hover {
-      background: #1e293b;
-    }
-    .empty-msg {
-      text-align: center;
-      color: #64748b;
-      padding: 30px 0;
-    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .cart-card { background: #ffffff; width: 100%; max-width: 500px; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+    .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .cart-header h2 { margin: 0; color: #0f172a; }
+    .back-btn { color: #64748b; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .cart-item { display: flex; align-items: center; justify-content: space-between; border: 1px solid #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 12px; background: #fafafa; }
+    .item-info { display: flex; align-items: center; gap: 12px; }
+    .item-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+    .item-title { margin: 0; font-size: 15px; font-weight: 600; color: #1e293b; }
+    .item-qty { font-size: 12px; color: #64748b; }
+    .item-price { font-weight: bold; color: #0f172a; }
+    .total-section { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin: 20px 0; color: #0f172a; }
+    .checkout-btn { width: 100%; background: #0f172a; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .checkout-btn:hover { background: #1e293b; }
   </style>
 </head>
 <body>
@@ -125,74 +30,35 @@
       <a href="/" class="back-btn">← Back</a>
     </div>
 
-    <!-- Dynamic Cart Content -->
-    <div id="cart-container"></div>
+    <div class="cart-item">
+      <div class="item-info">
+        <img src="/media/products/images_6.jpg" class="item-img" alt="Product 1" />
+        <div>
+          <p class="item-title">Product 1</p>
+          <span class="item-qty">Qty: 1</span>
+        </div>
+      </div>
+      <div class="item-price">1,250 PKR</div>
+    </div>
+
+    <div class="cart-item">
+      <div class="item-info">
+        <img src="/media/products/images_7.jpg" class="item-img" alt="Product 2" />
+        <div>
+          <p class="item-title">Product 2</p>
+          <span class="item-qty">Qty: 1</span>
+        </div>
+      </div>
+      <div class="item-price">1,500 PKR</div>
+    </div>
 
     <div class="total-section">
       <span>Total</span>
-      <span id="cart-total">0 PKR</span>
+      <span>2,750 PKR</span>
     </div>
 
-    <button class="checkout-btn" onclick="handleCheckout()">Proceed to Checkout</button>
+    <button class="checkout-btn" onclick="alert('Proceeding to Checkout!')">Proceed to Checkout</button>
   </div>
 
-  <script>
-    // Sample items (Local media images)
-    const cartItems = [
-      { id: 1, name: "Product 1", price: 1250, qty: 1, img: "/media/products/images_6.jpg" },
-      { id: 2, name: "Product 2", price: 1500, qty: 1, img: "/media/products/images_7.jpg" }
-    ];
-
-    function renderCart() {
-      const container = document.getElementById("cart-container");
-      const totalEl = document.getElementById("cart-total");
-
-      if (cartItems.length === 0) {
-        container.innerHTML = `<div class="empty-msg">Your cart is empty.</div>`;
-        totalEl.innerText = "0 PKR";
-        return;
-      }
-
-      let total = 0;
-      let html = "";
-
-      cartItems.forEach((item, index) => {
-        total += item.price * item.qty;
-        html += `
-          <div class="cart-item">
-            <div class="item-info">
-              <img src="${item.img}" class="item-img" alt="${item.name}" />
-              <div>
-                <p class="item-title">${item.name}</p>
-                <span class="item-qty">Qty: ${item.qty}</span>
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div class="item-price">${item.price} PKR</div>
-              <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-      totalEl.innerText = `${total} PKR`;
-    }
-
-    function removeItem(index) {
-      cartItems.splice(index, 1);
-      renderCart();
-    }
-
-    function handleCheckout() {
-      if (cartItems.length === 0) {
-        alert("Your cart is empty!");
-      } else {
-        window.location.href = "/checkout.html";
-      }
-    }
-
-    renderCart();
-  </script>
 </body>
 </html>
