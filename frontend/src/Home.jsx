@@ -4,6 +4,13 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState({ username: 'Guest' });
 
+  // Local media images mapping (jo aapke project folder mein hain)
+  const localImages = {
+    Laptop: '/media/products/images_6.jpg',
+    Phone: '/media/products/images_7.jpg',
+    Watch: '/media/products/images_8.jpg'
+  };
+
   // AWS Backend API se Products Fetch karne ke liye
   useEffect(() => {
     fetch('/api/products/')
@@ -43,7 +50,7 @@ const Home = () => {
         .product-card img {
           width: 100%;
           height: 200px;
-          object-fit: contain;
+          object-fit: cover;
           display: block;
           border-radius: 10px;
           margin: 0 auto 15px auto;
@@ -144,12 +151,13 @@ const Home = () => {
       <div className="product-grid">
         {products.length > 0 ? (
           products.map((product, index) => {
-            // String vs Object Handling
             const title = typeof product === 'object' ? product.name : product;
             const price = typeof product === 'object' ? product.price : '1,500';
+            
+            // Local Media path handling
             const imageUrl = typeof product === 'object' && product.image 
               ? product.image 
-              : `https://via.placeholder.com/300x200/0ea5e9/ffffff?text=${encodeURIComponent(title)}`;
+              : localImages[title] || `/media/products/images_${index + 6}.jpg`;
 
             return (
               <div className="product-card" key={product.id || index}>
