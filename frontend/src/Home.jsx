@@ -4,12 +4,12 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [user, setUser] = useState({ username: 'Guest' });
 
-  // 12 Sample Default Products (Agar Backend 12 na bheje)
-  const defaultProducts = Array.from({ length: 12 }, (_, i) => ({
+  // 24 Default Products (Agar Backend se kam data aaye)
+  const defaultProducts = Array.from({ length: 24 }, (_, i) => ({
     id: i + 1,
     name: `Product ${i + 1}`,
-    price: `${(i + 1) * 500 + 1000}`,
-    image: `/media/products/images_${i + 6}.jpg`
+    price: `${(i + 1) * 250 + 1000}`,
+    image: `/media/products/images_${(i % 12) + 6}.jpg`
   }));
 
   // AWS Backend API se Products Fetch karne ke liye
@@ -17,8 +17,7 @@ const Home = () => {
     fetch('/api/products/')
       .then((res) => res.json())
       .then((data) => {
-        // Agar backend se products ayein aur array length > 3 ho toh woh dikhao, warna default 12 dekhao
-        if (data.products && data.products.length > 3) {
+        if (data.products && data.products.length >= 24) {
           setProducts(data.products);
         } else {
           setProducts(defaultProducts);
@@ -165,7 +164,7 @@ const Home = () => {
           const price = typeof product === 'object' ? product.price : '1,500';
           const imageUrl = typeof product === 'object' && product.image 
             ? product.image 
-            : `/media/products/images_${index + 6}.jpg`;
+            : `/media/products/images_${(index % 12) + 6}.jpg`;
 
           return (
             <div className="product-card" key={product.id || index}>
