@@ -6,10 +6,9 @@ const Home = () => {
 
   // AWS Backend API se Products Fetch karne ke liye
   useEffect(() => {
-    // Apne AWS EC2 / Backend ka URL yahan dein (e.g. http://13.xx.xx.xx/api/products/)
     fetch('/api/products/')
       .then((res) => res.json())
-      .then((data) => setProducts(data.products))
+      .then((data) => setProducts(data.products || []))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
@@ -43,11 +42,12 @@ const Home = () => {
 
         .product-card img {
           width: 100%;
-          height: 300px;
-          object-fit: cover;
+          height: 200px;
+          object-fit: contain;
           display: block;
           border-radius: 10px;
           margin: 0 auto 15px auto;
+          background-color: #f9f9f9;
         }
 
         .product-card h3 {
@@ -143,22 +143,29 @@ const Home = () => {
       {/* Products Display Grid */}
       <div className="product-grid">
         {products.length > 0 ? (
-          products.map((product) => (
-            <div className="product-card" key={product.id}>
-              {product.image && (
-                <img src={product.image} alt={product.name} />
-              )}
-              <h3>{product.name}</h3>
-              <p>Price: {product.price} PKR</p>
-              
-              <button 
-                className="add-to-cart-btn" 
-                onClick={() => alert(`Added ${product.name} to cart`)}
-              >
-                🛒 Add to Cart
-              </button>
-            </div>
-          ))
+          products.map((product, index) => {
+            // String vs Object Handling
+            const title = typeof product === 'object' ? product.name : product;
+            const price = typeof product === 'object' ? product.price : '1,500';
+            const imageUrl = typeof product === 'object' && product.image 
+              ? product.image 
+              : `https://via.placeholder.com/300x200/0ea5e9/ffffff?text=${encodeURIComponent(title)}`;
+
+            return (
+              <div className="product-card" key={product.id || index}>
+                <img src={imageUrl} alt={title} />
+                <h3>{title}</h3>
+                <p>Price: PKR {price}</p>
+                
+                <button 
+                  className="add-to-cart-btn" 
+                  onClick={() => alert(`Added ${title} to cart`)}
+                >
+                  🛒 Add to Cart
+                </button>
+              </div>
+            );
+          })
         ) : (
           <p style={{ gridColumn: '1/-1', textAlign: 'center' }}>
             Loading products or backend not connected...
