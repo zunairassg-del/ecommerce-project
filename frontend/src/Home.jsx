@@ -9,7 +9,7 @@ const Home = () => {
     // Apne AWS EC2 / Backend ka URL yahan dein (e.g. http://13.xx.xx.xx/api/products/)
     fetch('/api/products/')
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) => setProducts(data.products))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
