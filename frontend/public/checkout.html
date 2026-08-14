@@ -6,8 +6,7 @@
   <title>Checkout</title>
   <style>
     :root { --primary: #008080; --bg: #f8fafc; }
-    
-    body { background-color: var(--bg); margin: 0; padding: 0; }
+    body { background-color: var(--bg); margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
 
     .checkout-container { 
         max-width: 900px; 
@@ -15,25 +14,14 @@
         display: grid; 
         grid-template-columns: 1.5fr 1fr; 
         gap: 30px; 
-        font-family: 'Segoe UI', sans-serif;
         padding: 0 20px;
     }
 
     @media (max-width: 768px) {
-        .checkout-container { 
-            grid-template-columns: 1fr; 
-            margin: 20px auto;
-            gap: 20px;
-        }
+        .checkout-container { grid-template-columns: 1fr; margin: 20px auto; gap: 20px; }
     }
 
-    .section { 
-        background: white; 
-        padding: 30px; 
-        border-radius: 16px; 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-    }
-
+    .section { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
     .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     h2 { color: #1e293b; margin: 0; font-size: 1.5rem; }
     .back-btn { color: #64748b; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
@@ -42,33 +30,34 @@
     label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 0.9rem; }  
     
     input, select { 
-        width: 100%; 
-        padding: 14px; 
-        border: 2px solid #e2e8f0; 
-        border-radius: 10px; 
-        transition: all 0.3s;
-        box-sizing: border-box; 
+        width: 100%; padding: 14px; border: 2px solid #e2e8f0; 
+        border-radius: 10px; transition: all 0.3s; box-sizing: border-box; 
     }
 
-    input:focus, select:focus { 
-        border-color: var(--primary); 
-        outline: none; 
-        box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1); 
-    }
+    input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1); }
 
     .pay-btn { 
-        width: 100%; 
-        background: var(--primary); 
-        color: white; 
-        padding: 16px; 
-        border: none; 
-        border-radius: 10px; 
-        font-weight: 700; 
-        cursor: pointer; 
-        transition: transform 0.2s, background 0.3s;
+        width: 100%; background: var(--primary); color: white; padding: 16px; 
+        border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: all 0.3s;
     }
-
     .pay-btn:hover { background: #006666; transform: translateY(-2px); }
+
+    /* Payment Card Modal Overlay */
+    .modal-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
+    }
+    .payment-card-box {
+        background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 420px;
+        text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    
+    .confirm-btn {
+        background: #10b981; color: white; padding: 12px 24px; border: none;
+        border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%;
+    }
+    .close-btn { color: #ef4444; background: none; border: none; cursor: pointer; margin-top: 10px; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -80,30 +69,30 @@
             <a href="/view_cart.html" class="back-btn">← Back to Cart</a>
         </div>
 
-        <form onsubmit="event.preventDefault(); alert('Order Placed Successfully!'); window.location.href='/order_success.html';">
+        <form id="checkoutForm">
             <div class="input-group">
                 <label>Full Name</label>
-                <input type="text" name="name" placeholder="John Doe" required>
+                <input type="text" id="custName" placeholder="John Doe" required>
             </div>
             <div class="input-group">
                 <label>Shipping Address</label>
-                <input type="text" name="address" placeholder="Street, City, Country" required>
+                <input type="text" id="custAddr" placeholder="Street, City, Country" required>
             </div>
             <div class="input-group">
                 <label>Phone Number</label>
-                <input type="text" name="phone" placeholder="+92 300 1234567" required>
+                <input type="text" id="custPhone" placeholder="+92 300 1234567" required>
             </div>
 
             <div class="input-group">
                 <label>Payment Method</label>
-                <select name="payment_method">
-                    <option value="cod">Cash on Delivery</option>
+                <select id="payMethod">
+                    <option value="cod">Cash on Delivery (COD)</option>
                     <option value="paypal">Pay with PayPal</option>
-                    <option value="stripe">Pay with Stripe</option>
+                    <option value="card">Credit / Debit Card</option>
                 </select>
             </div>
 
-            <button type="submit" class="pay-btn">Complete Purchase</button>
+            <button type="submit" class="pay-btn">Proceed to Payment</button>
         </form>
     </div>
 
@@ -123,6 +112,58 @@
         </div>
     </div>
 </div>
+
+<!-- Dynamic Payment Modal Card -->
+<div class="modal-overlay" id="paymentModal">
+    <div class="payment-card-box" id="modalContent">
+        <!-- Content injects dynamically -->
+    </div>
+</div>
+
+<script>
+  const form = document.getElementById('checkoutForm');
+  const modal = document.getElementById('paymentModal');
+  const modalContent = document.getElementById('modalContent');
+
+  form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const method = document.getElementById('payMethod').value;
+
+      if(method === 'card') {
+          modalContent.innerHTML = `
+              <h2>💳 Credit / Debit Card</h2>
+              <div class="input-group" style="margin-top: 15px;">
+                  <input type="text" placeholder="Card Number (16 digits)" required>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                  <input type="text" placeholder="MM/YY" required>
+                  <input type="text" placeholder="CVV" required>
+              </div>
+              <button class="confirm-btn" onclick="finishOrder()">Pay Rs. 3,250</button>
+              <button class="close-btn" onclick="closeModal()">Cancel</button>
+          `;
+      } else if(method === 'paypal') {
+          modalContent.innerHTML = `
+              <h2>🅿️ PayPal Express</h2>
+              <p style="color: #64748b;">Redirecting to secure PayPal gateway...</p>
+              <button class="confirm-btn" style="background:#0070ba;" onclick="finishOrder()">Log In & Pay with PayPal</button>
+              <button class="close-btn" onclick="closeModal()">Cancel</button>
+          `;
+      } else {
+          modalContent.innerHTML = `
+              <h2>📦 Cash on Delivery</h2>
+              <p style="color: #64748b;">Pay <b>Rs. 3,250</b> when your order arrives at your address.</p>
+              <button class="confirm-btn" onclick="finishOrder()">Confirm Order</button>
+              <button class="close-btn" onclick="closeModal()">Cancel</button>
+          `;
+      }
+
+      modal.style.display = 'flex';
+  });
+
+  function closeModal() { modal.style.display = 'none'; }
+  function finishOrder() { window.location.href = '/order_success.html'; }
+</script>
 
 </body>
 </html>
