@@ -20,7 +20,8 @@
     .total-section { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin: 20px 0; color: #0f172a; }
     .checkout-btn { width: 100%; background: #0f172a; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; text-align: center; text-decoration: none; display: block; }
     .checkout-btn:hover { background: #1e293b; }
-    .empty-msg { text-align: center; color: #64748b; margin: 20px 0; }
+    .empty-msg { text-align: center; color: #64748b; padding: 20px 0; font-weight: 600; }
+    .clear-btn { background: transparent; border: none; color: #ef4444; font-size: 12px; cursor: pointer; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -28,37 +29,72 @@
   <div class="cart-card">
     <div class="cart-header">
       <h2>Shopping Cart</h2>
-      <a href="{% url 'home' %}" class="back-btn">← Back</a>
+      <a href="/" class="back-btn">← Back</a>
     </div>
 
-    <!-- Dynamic Cart Loop -->
-    {% if cart_items %}
-      {% for item in cart_items %}
-        <div class="cart-item">
-          <div class="item-info">
-            {% if item.product.image %}
-              <img src="{{ item.product.image.url }}" class="item-img" alt="{{ item.product.name }}" />
-            {% endif %}
-            <div>
-              <p class="item-title">{{ item.product.name }}</p>
-              <span class="item-qty">Qty: {{ item.quantity }}</span>
-            </div>
-          </div>
-          <div class="item-price">{{ item.total_price }} PKR</div>
-        </div>
-      {% endfor %}
+    <!-- Dynamic Container where JS renders products -->
+    <div id="cart-container"></div>
 
-      <div class="total-section">
-        <span>Total</span>
-        <span>{{ total_price }} PKR</span>
-      </div>
+    <div class="total-section">
+      <span>Total</span>
+      <span id="cart-total">0 PKR</span>
+    </div>
 
-      <a href="{% url 'checkout' %}" class="checkout-btn">Proceed to Checkout</a>
-    {% else %}
-      <p class="empty-msg">Your cart is empty!</p>
-      <a href="{% url 'home' %}" class="checkout-btn">Continue Shopping</a>
-    {% endif %}
+    <a href="/checkout.html" id="checkout-btn" class="checkout-btn">Proceed to Checkout</a>
   </div>
+
+  <script>
+    function renderCart() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let container = document.getElementById('cart-container');
+      let totalEl = document.getElementById('cart-total');
+      let checkoutBtn = document.getElementById('checkout-btn');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="empty-msg">Your cart is empty!</p>';
+        totalEl.innerText = '0 PKR';
+        checkoutBtn.style.display = 'none';
+        return;
+      }
+
+      checkoutBtn.style.display = 'block';
+      let html = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        let itemTotal = item.price * item.qty;
+        total += itemTotal;
+
+        html += `
+          <div class="cart-item">
+            <div class="item-info">
+              <img src="${item.image}" class="item-img" alt="${item.name}" onerror="this.src='https://via.placeholder.com/50'" />
+              <div>
+                <p class="item-title">${item.name}</p>
+                <span class="item-qty">Qty: ${item.qty}</span>
+                <br>
+                <button onclick="removeItem(${index})" class="clear-btn">Remove</button>
+              </div>
+            </div>
+            <div class="item-price">${itemTotal.toLocaleString()} PKR</div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      totalEl.innerText = total.toLocaleString() + ' PKR';
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    // Load Cart items on Page Load
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
 
 </body>
 </html>
