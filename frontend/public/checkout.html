@@ -1,21 +1,27 @@
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <style>
     :root { --primary: #008080; --bg: #f8fafc; }
     
+    body { background-color: var(--bg); margin: 0; padding: 0; }
+
     .checkout-container { 
         max-width: 900px; 
         margin: 40px auto; 
         display: grid; 
-        /* Desktop ke liye side-by-side layout */
         grid-template-columns: 1.5fr 1fr; 
         gap: 30px; 
         font-family: 'Segoe UI', sans-serif;
         padding: 0 20px;
     }
 
-    /* Mobile aur Tablets ke liye responsive adjustment */
     @media (max-width: 768px) {
         .checkout-container { 
-            grid-template-columns: 1fr; /* Single column layout */
+            grid-template-columns: 1fr; 
             margin: 20px auto;
             gap: 20px;
         }
@@ -28,7 +34,9 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
     }
 
-    h2 { color: #1e293b; margin-top: 0; margin-bottom: 20px; font-size: 1.5rem; }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    h2 { color: #1e293b; margin: 0; font-size: 1.5rem; }
+    .back-btn { color: #64748b; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
 
     .input-group { margin-bottom: 20px; }
     label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; font-size: 0.9rem; }  
@@ -61,13 +69,18 @@
     }
 
     .pay-btn:hover { background: #006666; transform: translateY(-2px); }
-</style>
+  </style>
+</head>
+<body>
 
 <div class="checkout-container">
     <div class="section">
-        <h2>Shipping Details</h2>
-        <form method="POST" action="{% url 'process_payment' %}">
-            {% csrf_token %}
+        <div class="header-top">
+            <h2>Shipping Details</h2>
+            <a href="/view_cart.html" class="back-btn">← Back to Cart</a>
+        </div>
+
+        <form onsubmit="event.preventDefault(); alert('Order Placed Successfully!'); window.location.href='/order_success.html';">
             <div class="input-group">
                 <label>Full Name</label>
                 <input type="text" name="name" placeholder="John Doe" required>
@@ -78,7 +91,7 @@
             </div>
             <div class="input-group">
                 <label>Phone Number</label>
-                <input type="text" name="phone" placeholder="+1 234 567 890" required>
+                <input type="text" name="phone" placeholder="+92 300 1234567" required>
             </div>
 
             <div class="input-group">
@@ -98,15 +111,18 @@
         <h2>Order Summary</h2>
         <div style="color: #64748b;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span>Subtotal</span> <span>Rs. {{ total }}</span>
+                <span>Subtotal</span> <span>Rs. 2,750</span>
             </div>
             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                 <span>Delivery Charges</span> <span>Rs. 500</span>
             </div>
             <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;">
             <div style="display: flex; justify-content: space-between; font-weight: bold; color: #1e293b; font-size: 1.2rem;">
-                <span>Total</span> <span>Rs. {% widthratio total|add:500 1 1 %}</span>
+                <span>Total</span> <span>Rs. 3,250</span>
             </div>
         </div>
     </div>
 </div>
+
+</body>
+</html>
